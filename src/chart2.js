@@ -1,50 +1,35 @@
 import React, { useEffect, useRef } from "react";
-import \* as d3 from "d3";
+import * as d3 from "d3";
+import { event } from "d3";
 
-const ColTree = () => {
-const myRef = useRef();
+const Chart2 = () => {
+  const myRef = useRef();
 
-useEffect(() => {
-const width = document.body.clientWidth;
-const height = document.body.clientHeight;
-const margin = { top: 10, right: 120, bottom: 10, left: 40 };
-const dx = 10;
-const dy = 159;
-const diagonal = d3
-.linkHorizontal()
-.x((d) => d.y)
-.y((d) => d.x);
+  //define
 
-    //const treeLayout = tree().size([dy, dx]);
-    const tree = d3.tree().nodeSize([dx, dy]);
+  useEffect(() => {
+    const margin = { top: 10, right: 120, bottom: 10, left: 40 };
+    const dx = 10;
+    const dy = 159;
 
-    //datafetching
-
-    d3.json("data.json").then((data) => {
-      console.log(data);
+    const svg = d3
+      .select(myRef)
+      .append("svg")
+      .attr("viewBox", [-margin.left, -margin.top, dy, dx])
+      .style("font", "10px sans-serif")
+      .style("user-select", "none");
+    d3.json("flare.json").then((data) => {
       const root = d3.hierarchy(data);
-      console.log(root);
-
       root.x0 = dy / 2;
       root.y0 = 0;
-      root.descendants().forEach((d, i) => {
-        d.id = i;
-        d._children = d.children;
-        if (d.depth && d.data.name.length !== 7) d.children = null;
-      });
 
-      const svg = d3
-        .select(myRef.current)
-        .append("svg")
-        .attr("viewBox", [-margin.left, -margin.top, width, dx])
-        .style("font", "10px sans-serif")
-        .style("user-select", "none");
+      update(root);
 
-      //Zooming
-      const zoomG = svg.attr("width", width).attr("height", height).append("g");
-      const g = zoomG
-        .append("g")
-        .attr("transform", `translate(${margin.left},${margin.top})`);
+      const tree = d3.tree().nodeSize([dx, dy]);
+      const diagonal = d3
+        .linkHorizontal()
+        .x((d) => d.y)
+        .y((d) => d.x);
 
       const gLink = svg
         .append("g")
@@ -59,7 +44,7 @@ const diagonal = d3
         .attr("pointer-events", "all");
 
       function update(source) {
-        const duration = 2500;
+        const duration = onmouseover ? 2500 : 250;
         const nodes = root.descendants().reverse();
         const links = root.links();
 
@@ -78,7 +63,7 @@ const diagonal = d3
         const transition = svg
           .transition()
           .duration(duration)
-          .attr("viewBox", [-margin.left, left.x - margin.top, width, height])
+          .attr("viewBox", [-margin.left, left.x - margin.top, dy, height])
           .tween(
             "resize",
             window.ResizeObserver ? null : () => () => svg.dispatch("toggle")
@@ -164,15 +149,17 @@ const diagonal = d3
           d.x0 = d.x;
           d.y0 = d.y;
         });
+
+        root.descendants().forEach((d, i) => {
+          d.id = i;
+          d._children = d.children;
+          if (d.depth && d.data.name.length !== 7) d.children = null;
+        });
       }
-      update(root);
-
-      return svg.node();
     });
+  }, []);
 
-}, []);
-
-return <div className="svg" ref={myRef}></div>;
+  return <div ref={myRef}></div>;
 };
 
-export default ColTree;
+export default Chart2;

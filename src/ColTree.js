@@ -1,19 +1,19 @@
 import React, { useEffect, useRef } from "react";
-import \* as d3 from "d3";
+import * as d3 from "d3";
 
 const ColTree = () => {
-const myRef = useRef();
+  const myRef = useRef();
 
-useEffect(() => {
-const width = document.body.clientWidth;
-const height = document.body.clientHeight;
-const margin = { top: 10, right: 120, bottom: 10, left: 40 };
-const dx = 10;
-const dy = 159;
-const diagonal = d3
-.linkHorizontal()
-.x((d) => d.y)
-.y((d) => d.x);
+  useEffect(() => {
+    const width = document.body.clientWidth;
+    const height = document.body.clientHeight;
+    const margin = { top: 10, right: 120, bottom: 10, left: 40 };
+    const dx = 10;
+    const dy = 159;
+    const diagonal = d3
+      .linkHorizontal()
+      .x((d) => d.y)
+      .y((d) => d.x);
 
     //const treeLayout = tree().size([dy, dx]);
     const tree = d3.tree().nodeSize([dx, dy]);
@@ -30,14 +30,14 @@ const diagonal = d3
       root.descendants().forEach((d, i) => {
         d.id = i;
         d._children = d.children;
-        if (d.depth && d.data.name.length !== 7) d.children = null;
+        if (d.depth && d.data.length !== 2) d.children = null;
       });
 
       const svg = d3
         .select(myRef.current)
         .append("svg")
         .attr("viewBox", [-margin.left, -margin.top, width, dx])
-        .style("font", "10px sans-serif")
+        .style("font", "10.5px sans-serif")
         .style("user-select", "none");
 
       //Zooming
@@ -49,9 +49,9 @@ const diagonal = d3
       const gLink = svg
         .append("g")
         .attr("fill", "none")
-        .attr("stroke", "#555")
+        .attr("stroke", "green")
         .attr("stroke-opacity", 0.4)
-        .attr("stroke-width", 1.5);
+        .attr("stroke-width", 2);
 
       const gNode = svg
         .append("g")
@@ -59,7 +59,7 @@ const diagonal = d3
         .attr("pointer-events", "all");
 
       function update(source) {
-        const duration = 2500;
+        const duration = 2000;
         const nodes = root.descendants().reverse();
         const links = root.links();
 
@@ -102,20 +102,20 @@ const diagonal = d3
         nodeEnter
           .append("circle")
           .attr("r", 2.5)
-          .attr("fill", (d) => (d._children ? "#555" : "#999"))
+          .attr("fill", (d) => (d._children ? "red" : "tomato"))
           .attr("stroke-width", 10);
 
         nodeEnter
           .append("text")
           .attr("dy", "0.31em")
-          .attr("x", (d) => (d._children ? -6 : 6))
+          .attr("x", (d) => (d._children ? -2 : 2))
           .attr("text-anchor", (d) => (d._children ? "end" : "start"))
-          .text((d) => d.data.name)
+          .text((d) => d.data.data.id)
           .clone(true)
           .lower()
           .attr("stroke-linejoin", "round")
           .attr("stroke-width", 3)
-          .attr("stroke", "white");
+          .attr("stroke", "green");
 
         // Transition nodes to their new position.
         const nodeUpdate = node
@@ -169,10 +169,9 @@ const diagonal = d3
 
       return svg.node();
     });
+  }, []);
 
-}, []);
-
-return <div className="svg" ref={myRef}></div>;
+  return <div className="svg" ref={myRef}></div>;
 };
 
 export default ColTree;
