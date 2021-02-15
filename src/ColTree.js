@@ -7,7 +7,7 @@ const ColTree = () => {
   useEffect(() => {
     const width = document.body.clientWidth;
     const height = document.body.clientHeight;
-    const margin = { top: 10, right: 120, bottom: 10, left: 40 };
+    const margin = { top: 10, right: 120, bottom: 80, left: 180 };
     const dx = 10;
     const dy = 159;
     const diagonal = d3
@@ -37,7 +37,7 @@ const ColTree = () => {
         .select(myRef.current)
         .append("svg")
         .attr("viewBox", [-margin.left, -margin.top, width, dx])
-        .style("font", "10.5px sans-serif")
+        .style("font", "10px sans-serif")
         .style("user-select", "none");
 
       //Zooming
@@ -51,7 +51,7 @@ const ColTree = () => {
         .attr("fill", "none")
         .attr("stroke", "green")
         .attr("stroke-opacity", 0.4)
-        .attr("stroke-width", 2);
+        .attr("stroke-width", 1.5);
 
       const gNode = svg
         .append("g")
@@ -59,7 +59,7 @@ const ColTree = () => {
         .attr("pointer-events", "all");
 
       function update(source) {
-        const duration = 2000;
+        const duration = 1500;
         const nodes = root.descendants().reverse();
         const links = root.links();
 
@@ -101,8 +101,8 @@ const ColTree = () => {
 
         nodeEnter
           .append("circle")
-          .attr("r", 2.5)
-          .attr("fill", (d) => (d._children ? "red" : "tomato"))
+          .attr("r", 3.5)
+          .attr("fill", (d) => (d._children ? "red" : "yellow"))
           .attr("stroke-width", 10);
 
         nodeEnter
@@ -115,7 +115,7 @@ const ColTree = () => {
           .lower()
           .attr("stroke-linejoin", "round")
           .attr("stroke-width", 3)
-          .attr("stroke", "green");
+          .attr("stroke", "white");
 
         // Transition nodes to their new position.
         const nodeUpdate = node

@@ -19,7 +19,6 @@ const NewC = (props) => {
     const margin = { top: 0, right: 50, bottom: 0, left: 75 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
-
     const treeLayout = tree().size([innerHeight, innerWidth]);
 
     const zoomG = svg.attr("width", width).attr("height", height).append("g");
@@ -28,6 +27,7 @@ const NewC = (props) => {
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
+    //data fetching
     json("data.json").then((data) => {
       console.log(data);
       const root = hierarchy(data);
